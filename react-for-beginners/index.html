@@ -138,25 +138,77 @@
   <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
-    function App() {
-      const [minutes, setMinutes] = React.useState();
+    function MinutesToHours() {
+      // useState(0)에서 0은 default값
+      // setState의 결과는 array
+      // 첫 번째 요소는 데이터, 두 번째 요소는 데이터를 수정하기 위한 함수(주로 데이터 이름 앞에 set을 붙여줌)
+      const [amount, setAmount] = React.useState(0);
+      const [inverted, setInverted] = React.useState(false);
       const onChange = (event) => {
-        setMinutes(event.target.value);
+        setAmount(event.target.value);
+      };
+      const reset = () => setAmount(0);
+      const onInvert = () => {
+        reset();
+        setInverted((current) => !current);
       };
       return (
         <div>
-          <h1 className="hi">Super Converter</h1>
-          <label htmlFor="minutes">Minutes</label>
-          <input
-            value={minutes}
-            id="minutes"
-            placeholder="Minutes"
-            type="number"
-            onChange={onChange}
-          />
-          <h4>You want to convert {minutes} </h4>
-          <label htmlFor="hours">Hours</label>
-          <input id="hours" placeholder="Hours" type="number" />
+          <div>
+            <label htmlFor="minutes">Minutes</label>
+            <input
+              // input의 value를 연결시켜주는 이유는 input값을 외부에서도 수정해주기 위해서
+              value={inverted ? amount * 60 : amount}
+              id="minutes"
+              placeholder="Minutes"
+              type="number"
+              onChange={onChange}
+              disabled={inverted}
+            />
+          </div>
+          <div>
+            <label htmlFor="hours">Hours</label>
+            <input
+              // 삼항 연산자 조건문(inverted)이 참이면 앞 조건문(minutes) 실행 거짓이면 뒤에 있는 조건문(Math.round(minutes / 60)) 실행
+              value={inverted ? amount : Math.round(amount / 60)}
+              id="hours"
+              placeholder="Hours"
+              type="number"
+              disabled={!inverted}
+              onChange={onChange}
+            />
+          </div>
+          <button onClick={reset}>Reset</button>
+          <button onClick={onInvert}>
+            {inverted ? "Turn back" : "Invert"}
+          </button>
+        </div>
+      );
+    }
+    function KmToMiles() {
+      return <h3>KM 2 M</h3>;
+    }
+    function App() {
+      const [index, setIndex] = React.useState("xx");
+      const onSelect = (event) => {
+        setIndex(event.target.value);
+      };
+      console.log("render w/", index);
+      return (
+        <div>
+          <h1>Super Converter</h1>
+
+          <select value={index} onChange={onSelect}>
+            <option value="xx">Select your units</option>
+            <option value="0">Minutes & Hours</option>
+            <option value="1">Km & Miles</option>
+          </select>
+          <hr />
+          {index === "xx" ? "Please select your units" : null}
+          {/*분할정복(Divide and Conquer) 사용 */}
+          {/*jsx를 사용해 if else 작성*/}
+          {index === "0" ? <MinutesToHours /> : null}
+          {index === "1" ? <KmToMiles /> : null}
         </div>
       );
     }
