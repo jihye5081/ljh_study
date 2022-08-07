@@ -128,7 +128,7 @@
     ReactDOM.render(<App />, root);
   </script>
 </html> -->
-
+<!-- 
 <!DOCTYPE html>
 <html>
   <body>
@@ -209,6 +209,149 @@
           {/*jsx를 사용해 if else 작성*/}
           {index === "0" ? <MinutesToHours /> : null}
           {index === "1" ? <KmToMiles /> : null}
+        </div>
+      );
+    }
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+  </script>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // 함수형 컴포넌트 => Btn()
+    // props == Object, Btn으로부터 전달 받는 properties
+    // props는 첫 번째이자 유일한 인자
+    //  function Btn({ props }) , {props.text} -> function Btn({ text }), {text} -> 밑의 코드와 같음
+    function Btn({ text, big }) {
+      return (
+        // style={}과 style은 Object여야하므로 style={{}} 처럼 사용
+        <button
+          style={{
+            backgroundColor: "tomato",
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 10,
+            fontSize: big ? 18 : 16,
+          }}
+        >
+          {text}
+        </button>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          {/* jsx의 내부(inside of jsx) */}
+          {/* text=""는 임의로 정한 것(이름 상관 x) */}
+          {/*같은 함수형 컴포넌트 Btn을 사용하지만 각 버튼들은 App 컴포넌트에 의해 설정됨 */}
+          <Btn text="Save Changes" big={true} />
+          <Btn text="Continue" big={false} />
+        </div>
+      );
+    }
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+  </script>
+</html> 
+-->
+
+<!-- <!DOCTYPE html>
+<html>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // 만약 html 요소에 onClick을 사용하면 -> eventlistener 밑의 onClick은 prop
+    function Btn({ text, onClick }) {
+      return (
+        <button
+          onClick={onClick}
+          style={{
+            backgroundColor: "tomato",
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 10,
+          }}
+        >
+          {text}
+        </button>
+      );
+    }
+    // 컴포넌트들이 다시 그려질 때(re-render) 컨트롤 가능, props가 변경되는 것만 render 됨
+    // MemorizeBtn == memorized version의 Btn
+    const MemorizeBtn = React.memo(Btn);
+    function App() {
+      const [value, setValue] = React.useState("Save Changes");
+      const changeValue = () => setValue("Revert Changes");
+      return (
+        <div>
+          {/* state로 부터 string 전달, onClick은 eventlistener가 아닌 Btn으로 들어가는 prop*/}
+          <MemorizeBtn text={value} onClick={changeValue} />
+          <MemorizeBtn text="Continue" />
+        </div>
+      );
+    }
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+  </script>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // fontSize(text="Continue")가 존재하지 않을 때(undefined) 값으로 주는 것 -> 정의되지 않는 변수에 관한 기본값을 줄 수 o
+    function Btn({ text, fontSize = 12 }) {
+      return (
+        <button
+          style={{
+            backgroundColor: "tomato",
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 10,
+            fontSize,
+          }}
+        >
+          {text}
+        </button>
+      );
+    }
+    // Btn이 어떤 prop들을 받는지 검사하는게 가능하게끔 도와주는 것
+    // text는 string 타입, fontSize는 number 타입
+    // 위에 <script src="~~~~prop-types~~~~">을 작성했기 때문에 타입이 다르면 콘솔창에 warning으로 알려줌
+    // isRequired == 반드시 존재해야하는 것
+    Btn.propTypes = {
+      text: PropTypes.string.isRequired,
+      fontSize: PropTypes.number,
+    };
+    function App() {
+      const [value, setValue] = React.useState("Save Changes");
+      const changeValue = () => setValue("Revert Changes");
+      return (
+        <div>
+          <Btn text="Save Changes" fontSize={18} />
+          <Btn text={"Continue"} />
         </div>
       );
     }
