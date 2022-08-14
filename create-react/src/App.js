@@ -1,40 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => setToDo(event.target.value);
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (toDo === "") {
-      return;
-    }
-    // 함수를 통해 수정하는 방법
-    setToDos((currentArray) => [toDo, ...currentArray]);
-    // 직접적으로 값을 수정하는 방법
-    setToDo("");
-  };
-  console.log(toDos);
-  console.log(toDos.map((item, index) => <li key={index}>{item}</li>));
+  const [loading, setLoading] = useState(true);
+  // 만약 default값이 비어있다면(array가 아니라면) undefined이므로 []를 통해 default값 부여
+  const [coins, setCoins] = useState([]);
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
   return (
     <div>
-      <h1>My To Dos({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          value={toDo}
-          type="text"
-          placeholder="Write your to do"
-        />
-        <button>Add To Do</button>
-      </form>
-      <hr />
-      {/*map은 하나의 array에 있는 item을 내가 원하는 무엇이든지로 바꿔주는 역할, 바꿘 것을 새로운 배열로 return*/}
-      <ul>
-        {toDos.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+      {loading ? (
+        <strong>Loading...</strong>
+      ) : (
+        <select>
+          {coins.map((coin) => (
+            // warning 제거를 위해 key={coin.id} 작성
+            <option key={coin.id}>
+              {coins.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
+            </option>
+          ))}
+        </select>
+      )}
     </div>
   );
 }
