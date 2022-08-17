@@ -15,6 +15,7 @@ function Movie({ coverImg, title, summary, genres }) {
           <li key={g}>{g}</li>
         ))}
       </ul>
+      <button>Hello</button>
     </div>
   );
 }
