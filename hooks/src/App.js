@@ -1,52 +1,39 @@
+import { type } from "@testing-library/user-event/dist/type";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-// hooks 사용
+const useInput = (initualValue, validator) => {
+  const [value, setValue] = useState(initualValue);
+  const onChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    let willUpdate = true;
+    // validator가 function이 아닌 다른 타입이 들어오면 validator(value)에서 에러가 발생하므로 함수인지 타입 확인
+    if (typeof validator === "function") {
+      willUpdate = validator(value);
+    }
+    if (willUpdate) {
+      setValue(value);
+    }
+  };
+  return { value, onChange };
+};
+
 const App = () => {
-  const [item, setItem] = useState(1);
-  // 위의 코드와 같은 의미
-  // const item = useState(1)[0];
-  const incrementItem = () => setItem(item + 1);
-  const decrementItem = () => setItem(item - 1);
+  const maxLen = (value) => value.length <= 10;
+  // @가 포함되어 있으면 동작하지 x
+  // const maxLen = (value) => !value.includes("@");
+  const name = useInput("Mr.", maxLen);
   return (
     <div>
-      <h1>Hello {item}</h1>
-      <button onClick={incrementItem}>Increment</button>
-      <button onClick={decrementItem}>Decrement</button>
+      <h1>Hello</h1>
+      <input placeholder="Name" {...name} />
+      {/* value={name.value} == {...name}
+          ...name => name 안에 있는 모든 것들을 풀어줌
+      */}
     </div>
   );
 };
 
-// class 사용
-class AppUgly extends React.Component {
-  state = {
-    item: 1,
-  };
-  render() {
-    const { item } = this.state;
-    return (
-      <div>
-        <h1>Hello {item}</h1>
-        <button onClick={this.incrementItem}>Increment</button>
-        <button onClick={this.decrementItem}>Decrement</button>
-      </div>
-    );
-  }
-
-  incrementItem = () => {
-    this.setState((state) => {
-      return {
-        item: state.item + 1,
-      };
-    });
-  };
-  decrementItem = () => {
-    this.setState((state) => {
-      return {
-        item: state.item - 1,
-      };
-    });
-  };
-}
-
-export default AppUgly;
+export default App;
