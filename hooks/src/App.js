@@ -1,49 +1,52 @@
-import React, { Component, useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 
-// class App extends Component {
-//   state = {
-//     count: 0,
-//   };
-//   modify = (n) => {
-//     this.setState({
-//       count: n,
-//     });
-//   };
-//   render() {
-//     const { count } = this.state;
-//     return (
-//       <>
-//         <div>{count}</div>
-//         <button onClick={() => this.modify(count + 1)}>Increment</button>
-//       </>
-//     );
-//   }
-// }
-
-// export default App;
-
-// useEffect는 component did mount, did update와 비슷
-// 주로 API에서 데이터를 요청할 때 사용
-
+// hooks 사용
 const App = () => {
-  const [count, setCount] = useState(0);
-  const [email, setEmail] = useState("");
-  const updateEmail = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setEmail(value);
-  };
+  const [item, setItem] = useState(1);
+  // 위의 코드와 같은 의미
+  // const item = useState(1)[0];
+  const incrementItem = () => setItem(item + 1);
+  const decrementItem = () => setItem(item - 1);
   return (
-    <>
-      {count}
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-      <button onClick={() => setCount(count - 1)}>Decrement</button>
-      <input placeholder="Email" value={email} onChange={updateEmail} />
-    </>
+    <div>
+      <h1>Hello {item}</h1>
+      <button onClick={incrementItem}>Increment</button>
+      <button onClick={decrementItem}>Decrement</button>
+    </div>
   );
 };
 
-export default App;
+// class 사용
+class AppUgly extends React.Component {
+  state = {
+    item: 1,
+  };
+  render() {
+    const { item } = this.state;
+    return (
+      <div>
+        <h1>Hello {item}</h1>
+        <button onClick={this.incrementItem}>Increment</button>
+        <button onClick={this.decrementItem}>Decrement</button>
+      </div>
+    );
+  }
+
+  incrementItem = () => {
+    this.setState((state) => {
+      return {
+        item: state.item + 1,
+      };
+    });
+  };
+  decrementItem = () => {
+    this.setState((state) => {
+      return {
+        item: state.item - 1,
+      };
+    });
+  };
+}
+
+export default AppUgly;
