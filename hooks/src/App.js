@@ -1,40 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
-const content = [
-  {
-    tab: "Section 1",
-    content: "I'm the content of the Section 1",
-  },
-  {
-    tab: "Section 2",
-    content: "I'm the content of the Section 2",
-  },
-];
-
-// useTab => 버튼을 클릭했을 때 해당 버튼의 내용을 다르게 보여주는 것
-const useTabs = (initalTab, allTabs) => {
-  const [currentIndex, setCurrentIndex] = useState(initalTab);
-  if (!allTabs || !Array.isArray(allTabs)) {
-    return;
-  }
-  // 최상위에서만 hook을 호출해야하는데 이 위치에 존재하면 에러 발생
-  // 맨 위로 코드 옮겨주면 에러 해결
-  // const [currentIndex, setCurrentIndex] = useState(initalTab);
-  return {
-    currentItem: allTabs[currentIndex],
-    changeItem: setCurrentIndex,
-  };
-};
-
 const App = () => {
-  const { currentItem, changeItem } = useTabs(0, content);
+  const sayHello = () => console.log("Hello");
+  // useEffect(sayHello, ); => 이런식의 형태일 때만
+  // useEffect는 ComponentDidMount, ComponentWillUnMount, ComponentDidUpdate 이다
+  // useEffect가 sayHello를 component가 mount 되었을 때 실행, [number]가 바뀌면 update
+  // 만약 배열 안이 비어있다면 변화에 상관없이 무조건 1번만 실행
+  // useEffect(sayHello, [number]);
+  useEffect(() => {
+    sayHello();
+  });
+  const [number, setNumber] = useState(0);
+  const [aNumber, setAnumber] = useState(0);
   return (
     <div>
-      {content.map((section, index) => (
-        <button onClick={() => changeItem(index)}>{section.tab}</button>
-      ))}
-      <div>{currentItem.content}</div>
+      <div>Hi</div>
+      <button onClick={() => setNumber(number + 1)}>{number}</button>
+      <button onClick={() => setAnumber(aNumber + 1)}>{aNumber}</button>
     </div>
   );
 };
