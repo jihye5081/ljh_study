@@ -12,7 +12,6 @@ function App() {
       <Switch>
         <Route path="/abot-us">
           <h1>Hello</h1>
-          <p>test code</p>
         </Route>
         {/* Movie 컴포넌트에서 유저를 "/movie/변수" 의 경로로 보낼 수 o
           꼭 ":" 를 사용해야함
